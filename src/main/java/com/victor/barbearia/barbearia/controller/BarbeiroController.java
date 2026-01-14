@@ -1,9 +1,7 @@
 package com.victor.barbearia.barbearia.controller;
 
 import com.victor.barbearia.barbearia.domain.Barbeiro;
-import com.victor.barbearia.barbearia.domain.Cliente;
 import com.victor.barbearia.barbearia.service.BarbeiroService;
-import com.victor.barbearia.barbearia.service.ClienteService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
