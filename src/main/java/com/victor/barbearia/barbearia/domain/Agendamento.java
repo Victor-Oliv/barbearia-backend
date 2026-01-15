@@ -3,7 +3,12 @@ package com.victor.barbearia.barbearia.domain;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 
 @Entity
@@ -27,6 +32,17 @@ public class Agendamento {
     @Column(name = "data_hora", nullable = false)
     private LocalDateTime dataHora;
 
-    private Long servicoId;
+    @Column(name = "valor_total", nullable = false)
+    private BigDecimal valorTotal = BigDecimal.ZERO;
+
+    @Transient
+    private List<Long> servicosId;
+
+    @OneToMany(
+            mappedBy = "agendamento",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<AgendamentoItem> itens = new ArrayList<>();
 
 }
