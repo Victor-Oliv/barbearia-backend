@@ -16,9 +16,17 @@ public class Agendamento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long clienteId;
-    private Long barbeiroId;
-    private Long servicoId;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "cliente_id", nullable = false)
+    private Cliente cliente;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "barbeiro_id", nullable = false)
+    private Barbeiro barbeiro;
+
+    @Column(name = "data_hora", nullable = false)
     private LocalDateTime dataHora;
+
+    private Long servicoId;
 
 }
