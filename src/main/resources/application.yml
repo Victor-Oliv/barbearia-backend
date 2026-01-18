@@ -14,3 +14,7 @@ spring:
         format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
         default_schema: brb
+
+logging:
+  level:
+    org.springframework.security: DEBUG
