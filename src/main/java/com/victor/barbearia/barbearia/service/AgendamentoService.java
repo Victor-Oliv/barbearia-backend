@@ -9,7 +9,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Service
 @AllArgsConstructor
@@ -28,22 +30,26 @@ public class AgendamentoService {
         if (agendamento.getBarbeiro() == null || agendamento.getBarbeiro().getId() == null) {
             throw new IllegalArgumentException("barbeiro é obrigatório");
         }
-        if (agendamento.getDataHora() == null) {
-            throw new IllegalArgumentException("data e Hora é obrigatória");
+        if (agendamento.getData() == null) {
+            throw new IllegalArgumentException("data é obrigatória");
+        }
+        if (agendamento.getHora() == null) {
+            throw new IllegalArgumentException("hora é obrigatória");
         }
         if (agendamento.getServicosId() == null || agendamento.getServicosId().isEmpty()) {
             throw new IllegalArgumentException("Selecione ao menos um serviço");
         }
 
-        LocalDateTime dataHoraNormalizada = normalizarObrigatoria(agendamento.getDataHora());
-        agendamento.setDataHora(dataHoraNormalizada);
 
         Long clienteId = agendamento.getCliente().getId();
         Long barbeiroId = agendamento.getBarbeiro().getId();
+        LocalTime hora = agendamento.getHora();
+        LocalDate data = agendamento.getData();
 
-        boolean existeAgendamento = agendamentoRepository.existsByBarbeiro_IdAndDataHora(
+        boolean existeAgendamento = agendamentoRepository.existsByBarbeiro_IdAndDataAndHora(
                 barbeiroId,
-                dataHoraNormalizada
+                data,
+                hora
         );
         if (existeAgendamento) {
             throw new IllegalStateException("Horario indisponivel para este barbeiro");
@@ -77,9 +83,4 @@ public class AgendamentoService {
 
         return agendamentoRepository.save(agendamento);
     }
-
-    private LocalDateTime normalizarObrigatoria(LocalDateTime dataHora) {
-        return dataHora.withSecond(0).withNano(0);
-    }
-
 }

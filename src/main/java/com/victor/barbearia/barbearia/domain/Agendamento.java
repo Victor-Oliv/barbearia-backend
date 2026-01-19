@@ -5,10 +5,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+
 
 
 @Entity
@@ -29,8 +30,11 @@ public class Agendamento {
     @JoinColumn(name = "barbeiro_id", nullable = false)
     private Barbeiro barbeiro;
 
-    @Column(name = "data_hora", nullable = false)
-    private LocalDateTime dataHora;
+    @Column(name = "data", nullable = false)
+    private LocalDate data;
+
+    @Column(name = "hora", nullable = false)
+    private LocalTime hora;
 
     @Column(name = "valor_total", nullable = false)
     private BigDecimal valorTotal = BigDecimal.ZERO;
