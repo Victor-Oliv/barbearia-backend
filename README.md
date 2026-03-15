@@ -1,108 +1,213 @@
-# 💈 Sistema de Barbearia - API REST
+# 💈 Barbearia Backend - API REST
 
-Projeto backend desenvolvido em **Java com Spring Boot**, simulando o gerenciamento completo de uma barbearia, incluindo **clientes, barbeiros, serviços e agendamentos**.
-O objetivo principal é **praticar conceitos avançados de backend**, boas práticas e regras de negócio do mundo real.
+API REST desenvolvida em **Java com Spring Boot** para gerenciamento de uma barbearia.
+O sistema permite administrar **clientes, barbeiros, serviços, produtos e agendamentos**, além de fornecer regras de negócio para controle de horários, disponibilidade e cancelamentos.
 
----
-
-## 🚀 Funcionalidades
-
-* Cadastro, edição, listagem e remoção de **Clientes**
-* Cadastro e gerenciamento de **Barbeiros**
-* Cadastro de **Serviços** (ex: corte, barba, combo, etc.)
-* **Agendamento de horários**, respeitando regras de negócio:
-  * Cliente obrigatório
-  * Barbeiro obrigatório
-  * Serviço obrigatório
-  * Data e horário válidos
-* Cálculo de valor total do agendamento
-* Validações de dados
-* Arquitetura em camadas (Controller, Service, Repository)
+O objetivo do projeto é **praticar desenvolvimento backend com Spring Boot**, aplicando boas práticas, arquitetura em camadas e regras de negócio próximas de um sistema real.
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
+# 🚀 Funcionalidades
 
-* **Java 17**
-* **Spring Boot**
+### 👥 Clientes
+
+* Cadastro de clientes
+* Edição de dados
+* Listagem de clientes
+* Exclusão de clientes (com remoção dos agendamentos vinculados)
+
+### 💈 Barbeiros
+
+* Cadastro de barbeiros
+* Edição de barbeiros
+* Consulta de barbeiros disponíveis
+
+### ✂️ Serviços
+
+* Cadastro de serviços
+* Edição de serviços
+* Exclusão de serviços (permitida apenas se não houver agendamentos ativos)
+
+### 📦 Produtos
+
+* Cadastro de produtos
+* Edição de produtos
+* Controle de estoque
+
+### 📅 Agendamentos
+
+* Criação de agendamentos
+* Listagem de agendamentos
+* Atualização de agendamento
+* Cancelamento de agendamento
+
+Regras aplicadas:
+
+* Cliente obrigatório
+* Barbeiro obrigatório
+* Serviço obrigatório
+* Horário deve estar disponível
+* Conflitos de agenda são bloqueados
+* Cancelamento permitido apenas **com no mínimo 2 horas de antecedência**
+
+---
+
+# 🛠️ Tecnologias Utilizadas
+
+* **Java 17+**
+* **Spring Boot 4**
 * Spring Web
 * Spring Data JPA
 * Hibernate
+* Spring Security
 * Lombok
-* Banco de dados PostgreSQL
+* PostgreSQL
 * Maven
 
 ---
 
-## 🧱 Arquitetura do Projeto
+# 🧱 Arquitetura do Projeto
 
-O projeto segue o padrão de **arquitetura em camadas**:
+O projeto segue o padrão de **arquitetura em camadas**, separando responsabilidades para facilitar manutenção e evolução do sistema.
 
 ```
-controller  -> recebe as requisições HTTP
+controller  -> recebe requisições HTTP
 service     -> regras de negócio
 repository  -> acesso ao banco de dados
-domain      -> entidades do sistema
+domain      -> entidades JPA
+dto         -> objetos de transferência de dados
+exception   -> tratamento global de erros
+config      -> configurações do sistema
 ```
 
-Essa separação facilita manutenção, testes e escalabilidade.
+Estrutura principal:
+
+```
+src/main/java/com/victor/barbearia/barbearia/
+
+config/
+controller/
+domain/
+dto/
+exception/
+repository/
+service/
+```
 
 ---
 
-## 📌 Regras de Negócio Implementadas
+# 📌 Regras de Negócio
 
-* Um agendamento **não pode ser criado** sem:
-  * Cliente válido
-  * Barbeiro válido
-  * Serviço válido
-* O sistema valida IDs antes de persistir os dados
-* Datas e horários são tratados com `LocalDate` e `LocalTime`
-* Valores monetários utilizam `BigDecimal`
+O sistema implementa diversas regras comuns em sistemas de agendamento:
+
+### Horários disponíveis
+
+* Os horários são gerados em **intervalos de 30 minutos**
+* Horários ocupados não podem ser selecionados
+* Conflitos entre agendamentos são bloqueados
+
+### Cancelamento
+
+* Um agendamento só pode ser cancelado **com no mínimo 2 horas de antecedência**
+
+### Serviços
+
+* Serviços não podem ser excluídos se houver **agendamentos ativos vinculados**
+
+### Clientes
+
+* Ao excluir um cliente, seus agendamentos são removidos automaticamente
+
+### Status de agendamento
+
+Um agendamento pode possuir os seguintes status:
+
+```
+AGENDADO
+FINALIZADO
+CANCELADO
+```
 
 ---
 
-## 🔗 Exemplos de Endpoints
+# 🔗 Principais Endpoints
 
-### Criar agendamento
+## Autenticação
 
-```http
-POST /agendamentos
+```
+GET /auth/me
 ```
 
-### Listar agendamentos
+---
 
-```http
-GET /agendamentos
+## Clientes
+
 ```
-
-### Criar cliente
-
-```http
 POST /clientes
+GET /clientes
+PUT /clientes/{id}
+DELETE /clientes/{id}
 ```
 
-### Criar barbeiro
+---
 
-```http
+## Barbeiros
+
+```
 POST /barbeiros
+GET /barbeiros
+PUT /barbeiros/{id}
 ```
 
-*(Os endpoints seguem padrão RESTful)*
+---
+
+## Serviços
+
+```
+POST /servicos
+GET /servicos
+PUT /servicos/{id}
+DELETE /servicos/{id}
+```
 
 ---
 
-## 🧪 Objetivo do Projeto
+## Produtos
 
-Este projeto foi desenvolvido com foco em:
-
-* Consolidar conhecimentos em **Spring Boot**
-* Praticar **validações e regras de negócio**
-* Trabalhar com **JPA e relacionamentos**
-* Simular um sistema próximo da realidade
-* Evoluir boas práticas de código e organização
+```
+POST /produtos
+GET /produtos
+PUT /produtos/{id}
+```
 
 ---
 
-## 👨‍💻 Autor
+## Agendamentos
+
+```
+POST /agendamentos
+GET /agendamentos
+GET /agendamentos/cliente/{id}
+PUT /agendamentos/{id}
+DELETE /agendamentos/{id}
+PATCH /agendamentos/{id}/status
+```
+
+---
+
+# 🧪 Objetivo do Projeto
+
+Este projeto foi criado com foco em evolução técnica e prática em:
+
+* Desenvolvimento de **APIs REST**
+* Aplicação de **regras de negócio**
+* Uso de **Spring Boot e JPA**
+* Organização de projetos backend
+* Boas práticas de código
+
+---
+
+# 👨‍💻 Autor
+
 Desenvolvido por **Victor**
-Projeto de estudo e evolução.
+Projeto voltado para **estudo e evolução em desenvolvimento backend com Java e Spring Boot**.
