@@ -7,9 +7,13 @@ spring:
     password: ${DB_PASSWORD:Controle1@}
     driver-class-name: org.postgresql.Driver
 
+  flyway:
+    schemas: brb
+    default-schema: brb
+
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     show-sql: true
     properties:
       hibernate:
