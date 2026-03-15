@@ -4,21 +4,26 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Entity
+@Table(name = "produto")
 @Getter
 @Setter
-@Table(name = "Barbeiro")
-public class Barbeiro {
+public class Produto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String nome;
-    private String telefone;
 
-    @Column(unique = true)
-    private String email;
+    private String descricao;
 
-    private String senha;
+    @Column(nullable = false)
+    private BigDecimal preco;
+
+    @Column(nullable = false)
+    private Integer estoque = 0;
 }

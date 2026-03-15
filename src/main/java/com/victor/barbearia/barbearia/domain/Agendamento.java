@@ -12,6 +12,8 @@ import java.util.List;
 
 
 
+
+
 @Entity
 @Table(name = "agendamento")
 @Getter
@@ -39,8 +41,9 @@ public class Agendamento {
     @Column(name = "valor_total", nullable = false)
     private BigDecimal valorTotal = BigDecimal.ZERO;
 
-    @Transient
-    private List<Long> servicosId;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private StatusAgendamento status = StatusAgendamento.AGENDADO;
 
     @OneToMany(
             mappedBy = "agendamento",

@@ -20,4 +20,6 @@ public class Servico {
     private String descricaoServico;
     private BigDecimal valorServico;
 
+    private Integer duracaoMinutos;
+
 }
