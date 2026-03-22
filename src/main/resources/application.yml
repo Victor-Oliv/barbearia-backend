@@ -1,13 +1,12 @@
 spring:
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/barbearia_db}
-    # Credenciais via variável de ambiente. Fallback para valores locais.
-    # Em produção: defina DB_USERNAME e DB_PASSWORD no servidor, nunca no código.
-    username: ${DB_USERNAME:postgres}
-    password: ${DB_PASSWORD:Controle1@}
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   flyway:
+    enabled: true
     schemas: brb
     default-schema: brb
 
@@ -21,7 +20,9 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         default_schema: brb
 
+server:
+  port: ${PORT:8080}
+
 logging:
   level:
-    # DEBUG do Spring Security gera muitos logs — use INFO em produção
     org.springframework.security: INFO
