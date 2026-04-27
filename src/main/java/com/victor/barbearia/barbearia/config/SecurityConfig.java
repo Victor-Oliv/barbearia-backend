@@ -25,16 +25,24 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
+
+                        // 🔥 LIBERA PREFLIGHT (CORS)
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
+                        // 🔓 ENDPOINTS PÚBLICOS
                         .requestMatchers(HttpMethod.POST, "/clientes").permitAll()
                         .requestMatchers(HttpMethod.POST, "/barbeiros").permitAll()
+
+                        // 🔐 AUTH
                         .requestMatchers("/auth/me").authenticated()
 
-                        // Regras específicas de barbeiros devem vir ANTES do wildcard geral
+                        // 📅 REGRAS BARBEIROS
                         .requestMatchers(HttpMethod.GET, "/barbeiros/*/horarios-disponiveis").authenticated()
                         .requestMatchers(HttpMethod.GET, "/barbeiros/*/folgas").authenticated()
                         .requestMatchers(HttpMethod.POST, "/barbeiros/*/folgas").hasRole("BARBEIRO")
                         .requestMatchers(HttpMethod.DELETE, "/barbeiros/*/folgas/**").hasRole("BARBEIRO")
 
+                        // 📋 OUTROS
                         .requestMatchers(HttpMethod.GET, "/servicos", "/servicos/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/barbeiros", "/barbeiros/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/agendamentos/cliente/**").authenticated()
@@ -50,6 +58,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/barbeiros/**").hasRole("BARBEIRO")
                         .requestMatchers(HttpMethod.PUT, "/servicos/**").hasRole("BARBEIRO")
                         .requestMatchers(HttpMethod.PUT, "/produtos/**").hasRole("BARBEIRO")
+
+                        // 🔒 DEFAULT
                         .anyRequest().hasRole("BARBEIRO")
                 )
                 .httpBasic(Customizer.withDefaults())
@@ -60,13 +70,26 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:3000"));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(List.of("*"));
+        config.setAllowedOrigins(List.of(
+                "http://localhost:5173",
+                "http://localhost:3000",
+                "https://barbearia-frontend-chi.vercel.app"
+        ));
+
+        config.setAllowedMethods(List.of(
+                "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"
+        ));
+
+        config.setAllowedHeaders(List.of(
+                "Authorization",
+                "Content-Type"
+        ));
+
         config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
+
         return source;
     }
 
